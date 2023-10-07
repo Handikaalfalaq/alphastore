@@ -3,7 +3,7 @@ import "../assets/css/section.css"
 import FolderImage from '../assets/img/folderImage'
 import { connect } from 'react-redux' 
 import { getDataProductFromAPI} from '../config/firebase'
-import {Button, Card} from 'react-bootstrap'
+import { Card} from 'react-bootstrap'
 
 
 function Section({getProduct, dataRedux}){
@@ -66,8 +66,12 @@ function Section({getProduct, dataRedux}){
                                     ))
                                 )} 
                             </div>           
-                            <Card.Title className='titleProductSection'>{product.namaProduct}</Card.Title>  
-                            <Button className='checkout'><a href={product.linkProduct}  target="_blank" rel="noopener noreferrer">checkout</a></Button> 
+                            <Card.Title className='titleProductSection'>{product.namaProduct}</Card.Title>
+                            <div className='checkoutWrapper' onClick={() => window.open(product.linkProduct, '_blank')} role="link" tabIndex={0}>
+                                <a href={product.linkProduct} className='checkout' target="_blank" rel="noopener noreferrer">
+                                    <span>checkout</span>
+                                </a>
+                            </div>
                         </Card> 
                     ))}
                     </div>

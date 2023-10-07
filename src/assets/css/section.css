@@ -89,19 +89,13 @@ a {
     padding: 0px 4px !important; 
     border-radius: 10px !important;
     width: 80%;
-}
-
-.checkout a {
     text-decoration: none;
     color: white !important;
 }
 
-.checkout:hover a {
-    color: green !important;
-}
-
 .checkout:hover{
     background-color: white !important; 
+    color: green !important;
 }
 
 
