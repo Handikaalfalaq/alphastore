@@ -1,0 +1,120 @@
+.containerAdminPage{
+    display:flex;
+    flex-direction: column;
+    justify-content:center;
+    align-items:center;
+    border: 1px solid green;
+    font-size: 10px;
+}
+
+.akunLogin{
+    margin-top: 10px; 
+}
+
+.tambahProduct:hover{
+    background-color: white;
+    color: green; 
+}
+
+.dataProduct{
+    display:flex;
+    justify-content:center;
+    text-align: center;
+    align-items:center;
+    width: 80%;
+    margin: 0px 0px 3px;
+    height: 30px;
+}
+
+.no{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:15%;
+    text-align: center;
+    border: 1px solid black;
+    border-right: none;
+    height: 30px;
+}
+
+.nama{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:30%;
+    text-align: center;
+    border: 1px solid black; 
+    height: 30px;
+}
+
+.link{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:30%;
+    text-align: center;
+    border: 1px solid black;
+    border-left: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    height: 30px;
+}
+
+.action{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:25%;
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+    border: 1px solid black;
+    border-left: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    height: 30px;
+}
+
+.tambahProduct, .update, .delete{
+    background-color: green;
+    color: white; 
+    padding: 0px 4px;
+    margin: 3px 0px;
+    border-radius: 10px; 
+    font-size: 7px;
+}
+
+.update, .delete, .tambahProduct {
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align: center;
+    background-color: green !important;
+    border: 2px solid green !important;
+    color: white !important;
+    font-size: 7px !important;
+    padding: 0px 4px !important;
+    margin: 3px 0px !important;
+    border-radius: 10px !important;
+}
+
+.tambahProduct{
+    height:20px;
+    padding: 0px 7px !important;
+    margin: 3px 0px 10px 0px !important;
+}
+
+.delete{
+    background-color: red !important;
+    border: 2px solid red !important;
+}
+
+.tambahProduct:hover, .update:hover{
+    background-color: white !important;
+    color: green !important;
+}
+
+.delete:hover{
+    background-color: white !important;
+    color: red !important;
+}
