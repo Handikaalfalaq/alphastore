@@ -87,7 +87,7 @@ function AdminPage({dataRedux, getProduct, deleteProductAPI}){
                     <div className='dataProduct' key={index}>
                         <div className='no'>{index+1}</div>
                         <div className='nama'>{product.namaProduct}</div>
-                        <a href={product.linkProduct} className='link' target="_blank" rel="noopener noreferrer"> {product.linkProduct} </a>
+                        <a href={product.linkProduct} className='linkProduct' target="_blank" rel="noopener noreferrer"> {product.linkProduct} </a>
                         <div className='action'>
                             <Button className='update' onClick={() => updateProductId(product.id)}>update</Button>
                             <Button className='delete' onClick={() => deleteProductId(product.id)}>delete</Button> 
