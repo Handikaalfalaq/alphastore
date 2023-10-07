@@ -3,11 +3,13 @@ import "../assets/css/section.css"
 import FolderImage from '../assets/img/folderImage'
 import { connect } from 'react-redux' 
 import { getDataProductFromAPI} from '../config/firebase'
+import {Button, Card} from 'react-bootstrap'
 
 
 function Section({getProduct, dataRedux}){
     const [dataProduct, setDataProduct] = useState([])
     const [isLoading, setIsLoading] = useState(true);
+    const [idImage, setIdImage] = useState(0);
 
     /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
@@ -28,6 +30,11 @@ function Section({getProduct, dataRedux}){
 
         fetchData();
     }, [dataRedux.product]);
+
+    const idImageOpen = (id) => {
+        setIdImage(id)
+    }
+
     return(
         <div>
             <div className="containerSection">
@@ -35,18 +42,35 @@ function Section({getProduct, dataRedux}){
                 <div>selamat datang di Alpha Store</div>
                 <div>selamat berbelanja</div>
             </div>
-            <div className="containerItem">
+            <div className="containerPageSection">
             {isLoading ? (
                 <div>Loading...</div>
             ) : (
                 dataProduct.length === 0 ? (
                     <div>Product Masih Kosong</div> 
                 ) : ( 
-                    dataProduct.map((product, index) => (
-                        <a href={product.linkProduct} className="cssItem" key={index} target="_blank" rel="noopener noreferrer">
-                        {index + 1}. {product.namaProduct}
-                        </a>
-                    ))
+                    <div className='containerCardSection'>
+                    {dataProduct.map((product, index) => (
+                        <Card className='cardSection' key={index}>
+                            {product.urlImageProduct === undefined ? (
+                                <div className="imageProductUtamaSection">tidak ada gambar</div>
+                            ): (
+                                <Card.Img  variant="top" className="imageProductUtamaSection" src={product.urlImageProduct[idImage]} alt="logo Alpha Store" /> 
+                            )}
+                            <div className='containerImageProductSection'>
+                                {product.urlImageProduct === undefined ? (
+                                    <div className="imageProductSection">tidak ada gambar</div>    
+                                ): (
+                                    product.urlImageProduct.map((image, index) => (
+                                        <Card.Img  variant="top" className="imageProductSection" key={index} src={image} alt="Alpha Store" onClick={() => idImageOpen(index)}/>
+                                    ))
+                                )} 
+                            </div>           
+                            <Card.Title className='titleProductSection'>{product.namaProduct}</Card.Title>  
+                            <Button className='checkout'><a href={product.linkProduct}  target="_blank" rel="noopener noreferrer">checkout</a></Button> 
+                        </Card> 
+                    ))}
+                    </div>
                 ) 
             )} 
             </div> 

@@ -3,8 +3,8 @@
     flex-direction: column;
     justify-content:center;
     align-items:center;
-    border: 1px solid green;
     font-size: 10px;
+    padding-buttom: 10px;
 }
 
 .akunLogin{
@@ -16,64 +16,72 @@
     color: green; 
 }
 
-.dataProduct{
-    display:flex;
-    justify-content:center;
-    text-align: center;
-    align-items:center;
-    width: 80%;
-    margin: 0px 0px 3px;
-    height: 30px;
+.containerCard {
+    display: grid;
+    grid-template-columns: auto auto auto; 
+    grid-gap: 10px; 
 }
 
-.no{
+.cardAdmin{
     display:flex;
-    justify-content:center;
-    align-items:center;
-    width:15%;
-    text-align: center;
-    border: 1px solid black;
-    border-right: none;
-    height: 30px;
+    border: 1px solid green !important;
+    width: 200px;
 }
 
-.nama{
+.imageProductUtama{
     display:flex;
     justify-content:center;
     align-items:center;
-    width:30%;
-    text-align: center;
-    border: 1px solid black; 
-    height: 30px;
+    object-fit: cover;
+    height:150px;
+    width:150px !important;
+    margin: 5px auto; 
+    padding: 2px;
 }
 
-.link{
-    justify-content:center; 
-}
-
-.link, .linkProduct{ 
-    display:flex; 
-    align-items:center;
-    width:30%;
-    text-align: center;
-    border: 1px solid black;
-    border-left: none;
+.containerImageProduct{
+    display:flex;
+    padding: 0px 5px;
+    gap: 15px;
     overflow-x: auto;
-    white-space: nowrap;
-    height: 30px;
-    padding: 0px 4px
+    width: 190px
+}
+
+.imageProduct {
+    object-fit: cover;
+    width: 50px !important;
+    height: 50px;
+    border: 1px solid green;
+    padding: 2px; 
+    justify-content:center;
+    align-items:center;
 } 
+
+.cardBodyAdminPage{
+    display: flex !important;
+    flex-direction: column;
+    padding: 5px 10px 0px !important;
+}
+
+.titleProduct{
+    font-size: 13px !important; 
+    height: 32px;
+    overflow-x: auto;
+}
+
+.linkProduct{
+    height: 100px;
+    border: 1px solid green;
+    padding: 1px 2px;
+    overflow-x: auto;
+    margin: 0px !important; 
+}
 
 .action{
     display:flex;
-    justify-content:center;
+    justify-content:space-around;
     align-items:center;
-    width:25%;
-    display: flex;
-    justify-content: space-around;
-    text-align: center;
-    border: 1px solid black;
-    border-left: none;
+    text-align: center; 
     overflow-x: auto;
     white-space: nowrap;
     height: 30px;
@@ -122,3 +130,18 @@
     background-color: white !important;
     color: red !important;
 }
+
+
+@media (max-width: 700px) {
+    .containerCard {
+      grid-template-columns: auto auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .containerCard {
+      grid-template-columns: auto;
+    }
+  }
+
+  

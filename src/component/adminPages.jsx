@@ -1,6 +1,6 @@
 import { React, useState, useEffect} from 'react'
 import '../assets/css/adminPage.css'
-import {Button} from 'react-bootstrap'
+import {Button, Card} from 'react-bootstrap'
 import TambahProduct from '../modal/tambahProduct'
 import UpdateProduct from '../modal/updateProduct'
 import Swal from 'sweetalert2'
@@ -13,6 +13,7 @@ function AdminPage({dataRedux, getProduct, deleteProductAPI}){
     const [dataProduct, setDataProduct] = useState([])
     const [idProduct, setIdProduct] =  useState()
     const [isLoading, setIsLoading] = useState(true);
+    const [idImage, setIdImage] = useState(0);
 
     /* eslint-disable react-hooks/exhaustive-deps */
     useEffect(() => {
@@ -44,6 +45,9 @@ function AdminPage({dataRedux, getProduct, deleteProductAPI}){
         deleteProductAPI(id)
       };
 
+    const idImageOpen = (id) => {
+        setIdImage(id)
+    }
     const logOut = () => { 
         Swal.fire({
           title: 'apakah kayu yakin akan logout?', 
@@ -67,14 +71,7 @@ function AdminPage({dataRedux, getProduct, deleteProductAPI}){
         <div className="containerAdminPage">
             <div className='akunLogin'>Login : {dataRedux.notes.email}</div>
             <Button className='delete' onClick={logOut}>Log Out</Button>
-            <Button className='tambahProduct' onClick={() => setTambahProduct(true)}>Tambah Product</Button>
-
-            <div className='dataProduct'>
-                <div className='no'>no</div>
-                <div className='nama'>Nama</div>
-                <div className='link'>Link</div>
-                <div className='action'>Action</div>
-            </div>
+            <Button className='tambahProduct' onClick={() => setTambahProduct(true)}>Tambah Product</Button> 
 
             {isLoading ? (
                 <div>loading...</div>
@@ -83,17 +80,38 @@ function AdminPage({dataRedux, getProduct, deleteProductAPI}){
             dataProduct.length === 0 ? (
                 <div>Product Kosong</div>
             ) : (
-                dataProduct.map((product, index) => (
-                    <div className='dataProduct' key={index}>
-                        <div className='no'>{index+1}</div>
-                        <div className='nama'>{product.namaProduct}</div>
-                        <a href={product.linkProduct} className='linkProduct' target="_blank" rel="noopener noreferrer"> {product.linkProduct} </a>
-                        <div className='action'>
-                            <Button className='update' onClick={() => updateProductId(product.id)}>update</Button>
-                            <Button className='delete' onClick={() => deleteProductId(product.id)}>delete</Button> 
-                        </div>
-                    </div> 
-                ))
+                <div className='containerCard'>
+                    
+                    {dataProduct.map((product, index) => (
+                        <Card className='cardAdmin' key={index}>
+                            {product.urlImageProduct === undefined ? (
+                                <div className="imageProductUtama">tidak ada gambar</div>
+                            ): (
+                                <Card.Img  variant="top" className="imageProductUtama" src={product.urlImageProduct[idImage]} alt="logo Alpha Store" /> 
+                            )}
+                            <div className='containerImageProduct'>
+                                {product.urlImageProduct === undefined ? (
+                                    <div className="imageProduct">tidak ada gambar</div>    
+                                ): (
+                                    product.urlImageProduct.map((image, index) => (
+                                        <Card.Img  variant="top" className="imageProduct" key={index} src={image} alt="logo Alpha Store" onClick={() => idImageOpen(index)}/>
+                                    )) 
+                                    
+                                )}
+                                
+                            </div>                                
+                            <Card.Body className='cardBodyAdminPage'> 
+                                <Card.Title className='titleProduct'>{product.namaProduct}</Card.Title>
+                                <a href={product.linkProduct}  target="_blank" rel="noopener noreferrer">Klik Link</a> 
+                                <Card.Text className='linkProduct'> {product.linkProduct} </Card.Text>
+                                <div className='action'>
+                                    <Button className='update' onClick={() => updateProductId(product.id)}>update</Button>
+                                    <Button className='delete' onClick={() => deleteProductId(product.id)}>delete</Button> 
+                                </div>
+                            </Card.Body>
+                        </Card> 
+                    ))}
+                </div>
             )
             )}
             <TambahProduct show={tambahProduct} onHide={() => setTambahProduct(false)} />

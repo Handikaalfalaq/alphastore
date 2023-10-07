@@ -10,6 +10,7 @@ function ModalTambahMenu({show, onHide, idProduct, updateProduct, dataRedux}) {
         namaProduct:'',
         linkProduct:'',
         id:'',
+        imageProduct: [],
     })
  
     useEffect(() => {
@@ -24,11 +25,20 @@ function ModalTambahMenu({show, onHide, idProduct, updateProduct, dataRedux}) {
     }, [idProduct, dataRedux.product]); 
 
     const handleChange = (e) => {
+      const { name, type } = e.target; 
+      if (type === "file") {
+        const selectedFiles = Array.from(e.target.files);
         setDataUpdateProduct({
-            ...dataUpdateProduct,
-            [e.target.name]: e.target.value,
-        })
-    }
+          ...dataUpdateProduct, [name]: selectedFiles,
+        });
+      } else {
+        setDataUpdateProduct({
+          ...dataUpdateProduct,
+          [name]: e.target.value,
+        });
+      }
+    };
+    
     
     const handleSubmit = useMutation(async (e) => {
         try {
@@ -39,6 +49,7 @@ function ModalTambahMenu({show, onHide, idProduct, updateProduct, dataRedux}) {
             linkProduct : dataUpdateProduct.linkProduct,
             id : dataUpdateProduct.id,
             userId : userDataLocalStorage.uid,
+            imageProduct : dataUpdateProduct.imageProduct
           } 
           const isSuccess = await updateProduct(data)
           if (isSuccess) {  
@@ -46,7 +57,7 @@ function ModalTambahMenu({show, onHide, idProduct, updateProduct, dataRedux}) {
                 namaProduct:'',
                 linkProduct:'', 
             })
-            window.location.reload()
+            // window.location.reload()
             }
         } catch (error) { 
           console.log('error', error)
@@ -67,11 +78,17 @@ function ModalTambahMenu({show, onHide, idProduct, updateProduct, dataRedux}) {
             <Form.Group className="mb-3" >
                 <Form.Label className="labelModalNewMenu">Link Product</Form.Label>
                 <Form.Control className="controlModalNewMenu" value={dataUpdateProduct.linkProduct} name="linkProduct" type="text" placeholder="contoh: https://www.google.com" onChange={handleChange} required/>
-            </Form.Group> 
+            </Form.Group>
+
+            <Form.Group className="mb-3" >
+              <Form.Label className="labelModalNewMenu">Gambar Product</Form.Label>
+              <Form.Control className="controlModalNewMenu" type="file" name="imageProduct" id="imageProduct" onChange={handleChange} multiple/>
+            </Form.Group>
 
             <Modal.Footer>
                 <Button variant="primary" type="submit" className="buttonModalNewMenu">Update Product</Button>
             </Modal.Footer>
+
         </Form> 
       </Modal>
     )

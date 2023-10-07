@@ -2,7 +2,9 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"; 
 import { getFirestore } from "firebase/firestore";
 import { doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
-import Swal from 'sweetalert2'  
+import { ref, uploadBytes, getDownloadURL} from "firebase/storage";
+import Swal from 'sweetalert2'
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBWdrE9n0nWlfy2kEnD9-rwb4u_9FYPDQ4",
@@ -16,9 +18,8 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 const auth = getAuth(firebaseApp);
-const database = getFirestore(firebaseApp); 
-
-export { auth, database};
+const database = getFirestore(firebaseApp);
+const storage = getStorage(firebaseApp);
 
 export const registerUserApi = (dataRegister) => (dispatch) => {
     dispatch({ type: 'CHANGE_LOADING', value: true }); 
@@ -83,7 +84,6 @@ export const registerUserApi = (dataRegister) => (dispatch) => {
             dispatch({ type: 'CHANGE_LOADING', value: false }); 
         });
 };
-
   
 export const loginUserApi = (dataLogin) => (dispatch) => {
   dispatch({type: 'CHANGE_LOADING', value: true})
@@ -171,11 +171,29 @@ export const createNewProductToApi = (data) => async () => {
             Swal.showLoading();
           }
         });
+        const timestamp = new Date().getTime();
+        const folderName = 'imageProduct';
+        const imageUrls = [];
+
+        if(data.imageProduct !== undefined){
+          for (let i = 0; i < data.imageProduct.length; i++) {
+            const file = data.imageProduct[i];
+            const imageName = `${data.namaProduct}_${timestamp}_${file.name}`;
+            const storageRef = ref(storage, `${folderName}/${imageName}`);
+            const metadata = {
+              contentType: 'image/jpeg',
+            };
+            await uploadBytes(storageRef, file, metadata);
+            const downloadURL = await getDownloadURL(storageRef);
+            imageUrls.push(downloadURL);
+          }
+        } 
 
         const dataProductCollectionRef = collection(database, 'dataProduct');
         await addDoc(dataProductCollectionRef, {
           namaProduct: data.namaProduct,
           linkProduct: data.linkProduct,
+          urlImageProduct: imageUrls,
         });
 
         loadingSwal.close();
@@ -204,7 +222,6 @@ export const createNewProductToApi = (data) => async () => {
     }
   });
 };
-  
 
 export const getDataProductFromAPI = () => async (dispatch) => { 
   try { 
@@ -221,7 +238,7 @@ export const getDataProductFromAPI = () => async (dispatch) => {
   }
 };
 
-export const updateProductToApi = (data) => async () => {
+export const updateProductToApi = (data) => async () => {  
   return new Promise(async (resolve, reject) => {
     try {
       const result = await Swal.fire({
@@ -242,11 +259,37 @@ export const updateProductToApi = (data) => async () => {
             Swal.showLoading();
           }
         });
+        const productRef = collection(database, 'dataProduct');
+        const querySnapshot = await getDocs(productRef);
+        const products = [];
+        querySnapshot.forEach((doc) => {
+          products.push({ id: doc.id, ...doc.data() });
+        }); 
+        const filteredProducts = products.filter(product => product.id === data.id);
+        const filteredImageProducts = filteredProducts[0].urlImageProduct
+        const timestamp = new Date().getTime();
+        const folderName = 'imageProduct';
+        const imageUrls = [];
+
+        if(data.imageProduct !== undefined){
+          for (let i = 0; i < data.imageProduct.length; i++) {
+            const file = data.imageProduct[i];
+            const imageName = `${data.namaProduct}_${timestamp}_${file.name}`;
+            const storageRef = ref(storage, `${folderName}/${imageName}`);
+            const metadata = {
+              contentType: 'image/jpeg',
+            };
+            await uploadBytes(storageRef, file, metadata);
+            const downloadURL = await getDownloadURL(storageRef);
+            imageUrls.push(downloadURL);
+          }
+        } 
 
         const dataProductDocRef = doc(database, 'dataProduct', data.id);
         await setDoc(dataProductDocRef, { 
           namaProduct: data.namaProduct,
-          linkProduct: data.linkProduct, 
+          linkProduct: data.linkProduct,
+          urlImageProduct: [ ...filteredImageProducts, ...imageUrls],
         });
         loadingSwal.close();
         Swal.fire({

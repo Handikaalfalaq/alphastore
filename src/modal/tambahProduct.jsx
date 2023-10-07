@@ -9,24 +9,33 @@ function ModalTambahMenu({show, onHide, createNewProduct}) {
     const [newProduct, setNewProduct] = useState({
         namaProduct:'',
         linkProduct:'',
+        imageProduct:[],
     }) 
 
     const handleChange = (e) => {
+      const { name, type } = e.target;
+      if (type === "file") {
+        const selectedFiles = Array.from(e.target.files);
         setNewProduct({
-            ...newProduct,
-            [e.target.name]: e.target.value,
-        })
-    }
+          ...newProduct, [name]: selectedFiles,
+        });
+      } else {
+        setNewProduct({
+          ...newProduct,
+          [name]: e.target.value,
+        });
+      }
+    }; 
     
     const handleSubmit = useMutation(async (e) => {
     try {
       e.preventDefault(); 
-      const isSuccess = await createNewProduct({namaProduct : newProduct.namaProduct, linkProduct : newProduct.linkProduct}); 
-      console.log('isSuccess', isSuccess)
+      const isSuccess = await createNewProduct({namaProduct : newProduct.namaProduct, linkProduct : newProduct.linkProduct, imageProduct : newProduct.imageProduct});
       if (isSuccess) {
         setNewProduct({ 
           namaProduct:" ", 
           linkProduct:" ", 
+          imageProduct:" ", 
         }); 
         window.location.reload()
       } 
@@ -43,13 +52,18 @@ function ModalTambahMenu({show, onHide, createNewProduct}) {
         <Form className="formModalNewProduct" onSubmit={(e) => handleSubmit.mutate(e)}>
             <Form.Group className="mb-3" >
                 <Form.Label className="labelModalNewMenu">Nama Product</Form.Label>
-                <Form.Control className="controlModalNewMenu" name="namaProduct" type="text" placeholder="contoh: topi" onChange={handleChange}  required/>
+                <Form.Control className="controlModalNewMenu" name="namaProduct" type="text" placeholder="contoh: topi" onChange={handleChange} required/>
             </Form.Group>
 
             <Form.Group className="mb-3" >
                 <Form.Label className="labelModalNewMenu">Link Product</Form.Label>
                 <Form.Control className="controlModalNewMenu" name="linkProduct" type="text" placeholder="contoh: https://www.google.com" onChange={handleChange} required/>
-            </Form.Group> 
+            </Form.Group>
+
+            <Form.Group className="mb-3" >
+              <Form.Label className="labelModalNewMenu">Gambar Product</Form.Label>
+              <Form.Control className="controlModalNewMenu" type="file" name="imageProduct" id="imageProduct" onChange={handleChange} multiple/>
+            </Form.Group>
 
             <Modal.Footer>
                 <Button variant="primary" type="submit" className="buttonModalNewMenu">Tambah Product</Button>
