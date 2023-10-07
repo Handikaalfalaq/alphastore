@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"; 
 import { getFirestore } from "firebase/firestore";
-import { doc, setDoc, getDoc} from "firebase/firestore";
+import { doc, setDoc, getDoc, collection, addDoc, getDocs, deleteDoc } from "firebase/firestore";
 import Swal from 'sweetalert2'  
 
 const firebaseConfig = {
@@ -137,16 +137,208 @@ export const loginUserApi = (dataLogin) => (dispatch) => {
 };
 
 export const getDataUserFromAPI = (userId) => async (dispatch) => { 
-    const userRef = doc(database, "users", userId);
+    const userRef = doc(database, "users", userId); 
     try {
       const userDoc = await getDoc(userRef);   
       if (userDoc.exists()) {
         const userData = userDoc.data(); 
         dispatch({ type: 'SET_NOTES', value: userData });
-        console.log("userData", userData)
         return userData;  
       }
     } catch (error) { 
-      return {};
+      console.log("salah", error);
     }
   };
+
+export const createNewProductToApi = (data) => async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await Swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        denyButtonText: `Don't save`,
+      });
+
+      if (result.isConfirmed) {
+        const loadingSwal = Swal.fire({
+          title: 'Creating new product...',
+          html: 'Please wait, creating your product.',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          willOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        const dataProductCollectionRef = collection(database, 'dataProduct');
+        await addDoc(dataProductCollectionRef, {
+          namaProduct: data.namaProduct,
+          linkProduct: data.linkProduct,
+        });
+
+        loadingSwal.close();
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Create New Product Successful',
+          showConfirmButton: false,
+          timer: 1500,
+        }); 
+        resolve(true);
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info');
+        resolve(false);
+      } else { 
+        reject('Unexpected result');
+      }
+    } catch (error) {
+      console.error('Error creating product: ', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Create New Product failed!',
+      });
+      reject(false);
+    }
+  });
+};
+  
+
+export const getDataProductFromAPI = () => async (dispatch) => { 
+  try { 
+    const querySnapshot = await getDocs(collection(database, 'dataProduct'));
+    const productData = [];
+    querySnapshot.forEach((doc) => { 
+      productData.push({ id: doc.id, ...doc.data() }); 
+    }); 
+
+    dispatch({ type: 'SET_PRODUCT', value: productData }); 
+    return { productData };
+  } catch (error) {
+    console.error('Error fetching data: ', error); 
+  }
+};
+
+export const updateProductToApi = (data) => async () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const result = await Swal.fire({
+        title: 'Do you want to save the changes?',
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'Save',
+        denyButtonText: `Don't save`,
+      });
+
+      if (result.isConfirmed) {
+        const loadingSwal = Swal.fire({
+          title: 'Creating update product...',
+          html: 'Please wait, creating your product.',
+          allowOutsideClick: false,
+          showConfirmButton: false,
+          willOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        const dataProductDocRef = doc(database, 'dataProduct', data.id);
+        await setDoc(dataProductDocRef, { 
+          namaProduct: data.namaProduct,
+          linkProduct: data.linkProduct, 
+        });
+        loadingSwal.close();
+        Swal.fire({
+          position: 'center',
+          icon: 'success',
+          title: 'Update successful',
+          showConfirmButton: false,
+          timer: 1500,
+        }); 
+        resolve(true);
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info');
+        resolve(false);
+      } else { 
+        reject('Unexpected result');
+      }
+    } catch (error) {
+      console.error('Error updating document: ', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Update gagal',
+      }); 
+      reject(false);
+    }
+  });
+};
+
+export const deleteProductFromApi = (data) => async (dispatch) => {
+
+  try {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const loadingSwal = Swal.fire({
+            title: 'Deleting...',
+            html: 'Please wait, deleting your item.',
+            allowOutsideClick: false,
+            showConfirmButton: false,
+            willOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+
+        try {
+          await deleteDoc(doc(database, 'dataProduct', data));
+          loadingSwal.close();
+            Swal.fire({
+              position: 'center',
+              icon: 'success',
+              title: 'Delete successful',
+              showConfirmButton: false,
+              timer: 1500,
+              didClose: () => {
+                window.location.reload();
+            }
+          });
+          
+          return true;  
+        } catch (error) {
+          console.error('Error updating document: ', error); 
+          Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: 'Update gagal',
+          });
+          loadingSwal.close();
+          dispatch({ type: 'CHANGE_LOADING', value: false });
+          return false;
+      }
+
+
+  };
+});
+
+  } catch (error) {
+      console.error('Error deleting document: ', error);
+      Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Delete gagal',
+      });
+
+      dispatch({ type: 'CHANGE_LOADING', value: false });
+      return false;
+  }
+};

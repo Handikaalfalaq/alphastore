@@ -8,12 +8,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'CHANGE_POPUP':
-      return {
-        ...state,
-        popup: action.value,
-      };
+  switch (action.type) { 
     case 'CHANGE_ISLOGIN':
       return {
         ...state,
@@ -23,12 +18,7 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.value,
-      };
-    case 'CHANGE_LOADING':
-      return {
-        ...state,
-        isLoading: action.value,
-      };
+      }; 
     case 'SET_NOTES':
       return {
         ...state,

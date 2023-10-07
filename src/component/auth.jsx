@@ -9,13 +9,13 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom'
 
 function Auth({registerAPI, loginAPI, getNotes, dataRedux}) {
-  const navigate = useNavigate() 
-  console.log("dataRedux.notes.role", dataRedux.notes.role)
-  const dispatch = useDispatch();  
-    const [dataForm, setDataForm] = useState({ 
-        email:'',
-        password:'', 
-      }) 
+  const navigate = useNavigate()  
+  const dispatch = useDispatch(); 
+  const [waktu, setWaktu] = useState(3);
+  const [dataForm, setDataForm] = useState({ 
+      email:'',
+      password:'', 
+    }) 
      
       const handleChange = (e) => {
         setDataForm({
@@ -54,15 +54,12 @@ function Auth({registerAPI, loginAPI, getNotes, dataRedux}) {
         } catch (error) {
           console.log('error', error);
         }
-      });
-      
-      console.log('dataReduxlogin', dataRedux.isLogin)
-      console.log('dataReduxnotes', dataRedux.notes)
+      }); 
 
       useEffect(() => { 
         if(localStorage.getItem('userData')  !== null) { 
           dispatch({ type: 'CHANGE_ISLOGIN', value: true }); 
-          const userDataStorage = JSON.parse(localStorage.getItem('userData'))
+          const userDataStorage = JSON.parse(localStorage.getItem('userData')) 
           getNotes(userDataStorage.uid) 
         } 
       }, [dispatch, getNotes]);
@@ -71,19 +68,32 @@ function Auth({registerAPI, loginAPI, getNotes, dataRedux}) {
         if (dataRedux.notes.role === "admin") {
           navigate("/admin");
         }
-      }, [dataRedux.notes.role, navigate]);
+      }, [dataRedux.notes.role, navigate]); 
+
+    useEffect(() => {
+      const timer = setInterval(() => {
+        setWaktu(prevWaktu => prevWaktu - 1);
+      }, 1000); 
+      if (waktu <= 0) {
+        clearInterval(timer);
+      } 
+      return () => {
+        clearInterval(timer);
+      };
+    }, [waktu]); 
 
     return (
-      <>
+      <> 
+        {waktu > 0 ? (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>Loading...</div>
         
-        
-        <Form className='containerFormAuth'>
+        ) : (
+          <Form className='containerFormAuth'>
           {dataRedux.notes.role === "user" ? (
             <div>Anda bukan admin</div>
           ) : (
             <></>
-          )}
-
+          )} 
           <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email</Form.Label>
               <Form.Control name="email" type="email" placeholder="Enter email" onChange={handleChange}/> 
@@ -99,6 +109,8 @@ function Auth({registerAPI, loginAPI, getNotes, dataRedux}) {
               <Button variant="primary" type="submit" className='buttonAuth' onClick={(e) => handleSubmitRegister.mutate(e)}> Register </Button>
           </div>
         </Form>
+        )}
+        
       </>
     );
 }
