@@ -26,6 +26,17 @@
     display:flex;
     border: 1px solid green !important;
     width: 200px;
+    position: relative
+}
+
+.nomorProductAdmin{
+    position: absolute;
+    font-size: 15px;
+    border: 1px solid green;
+    background-color: green;
+    padding: 0px 5px;
+    color: white;
+    left: 13px;
 }
 
 .imageProductUtama{

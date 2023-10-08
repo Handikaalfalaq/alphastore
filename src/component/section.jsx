@@ -50,15 +50,16 @@ function Section({getProduct, dataRedux}){
                     <div>Product Masih Kosong</div> 
                 ) : ( 
                     <div className='containerCardSection'>
-                    {dataProduct.map((product, index) => (
+                    {dataProduct.slice().reverse().map((product, index) => (
                         <Card className='cardSection' key={index}>
-                            {product.urlImageProduct === undefined ? (
+                            <div className='nomorProduct'>{index+1}</div>
+                            {product.urlImageProduct === undefined || product.urlImageProduct.length === 0  ? (
                                 <div className="imageProductUtamaSection">tidak ada gambar</div>
                             ): (
                                 <Card.Img  variant="top" className="imageProductUtamaSection" src={product.urlImageProduct[idImage]} alt="logo Alpha Store" /> 
                             )}
                             <div className='containerImageProductSection'>
-                                {product.urlImageProduct === undefined ? (
+                                {product.urlImageProduct === undefined || product.urlImageProduct.length === 0 ? (
                                     <div className="imageProductSection">tidak ada gambar</div>    
                                 ): (
                                     product.urlImageProduct.map((image, index) => (

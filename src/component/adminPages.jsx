@@ -82,15 +82,16 @@ function AdminPage({dataRedux, getProduct, deleteProductAPI}){
             ) : (
                 <div className='containerCard'>
                     
-                    {dataProduct.map((product, index) => (
-                        <Card className='cardAdmin' key={index}>
-                            {product.urlImageProduct === undefined ? (
+                    {dataProduct.slice().reverse().map((product, index) => (
+                        <Card className='cardAdmin' key={index}> 
+                            <div className='nomorProductAdmin'>{index+1}</div>
+                            {product.urlImageProduct === undefined || product.urlImageProduct.length === 0 ? (
                                 <div className="imageProductUtama">tidak ada gambar</div>
                             ): (
                                 <Card.Img  variant="top" className="imageProductUtama" src={product.urlImageProduct[idImage]} alt="logo Alpha Store" /> 
                             )}
                             <div className='containerImageProduct'>
-                                {product.urlImageProduct === undefined ? (
+                                {product.urlImageProduct === undefined || product.urlImageProduct.length === 0 ? (
                                     <div className="imageProduct">tidak ada gambar</div>    
                                 ): (
                                     product.urlImageProduct.map((image, index) => (

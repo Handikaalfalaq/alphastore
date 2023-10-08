@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom'
 function Auth({registerAPI, loginAPI, getNotes, dataRedux}) {
   const navigate = useNavigate()  
   const dispatch = useDispatch(); 
-  const [waktu, setWaktu] = useState(3);
+  const [waktu, setWaktu] = useState(5);
   const [dataForm, setDataForm] = useState({ 
       email:'',
       password:'', 
